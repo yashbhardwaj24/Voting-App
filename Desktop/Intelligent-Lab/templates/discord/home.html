@@ -1,0 +1,97 @@
+{% extends 'base-project.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block style %}
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 1fr 3fr 1.5fr;
+        grid-gap: 15px;
+        padding: 0 5px;
+    }
+    .messages{
+        border: 0px;
+    }
+    .card{
+        border:0px;
+    }
+    .settings__table {
+        margin-top: 1rem;
+    }
+    @media (max-width:1080px) {
+        .container-first{
+            display: none;
+        }
+        .home-container{
+            grid-template-columns: 3fr 1fr;
+            padding: 0 10px;
+        }
+        .layout{
+            flex-wrap: nowrap;
+        }
+        .layout > .column {
+            flex-basis: 0 !important;
+        }
+        .custom-para{
+            font-size: 9px !important;
+        }
+        .card__body {
+            padding: 1rem 1.5rem;
+        }
+    }
+    @media (max-width:776px) {
+        .container-third{
+            display: none;
+        }
+        .home-container{
+            grid-template-columns: 1fr;
+            padding: 0 10px;
+        }
+    }
+</style>
+{% endblock style %}
+{% block body %}
+
+{% include 'discord/navbar.html' %}
+
+<div class="home-container" style="box-sizing:border-box;">
+
+    <div class="container-first">
+        {% include 'discord/topic_component.html' %}
+    </div>
+
+    <div style="margin-top: 50px;">
+        <div class="container" style="margin: 0;width: 100%;">
+
+            <div class="layout">
+                <div class="column column--1of2" style="margin-bottom:0px;">
+                    {{room_count}} Rooms Available
+                </div>
+                <div class="column column--1of2" style="margin-bottom:0px;display:flex;flex-direction: row-reverse;">
+                    <a href="{% url 'discord:createRoom' %}">
+                        <button style=" width: 152px !important;" class="btn btn--main">
+                            Create Room
+                        </button>
+                    </a>
+                </div>
+            </div>
+                
+            {% include 'discord/feed_component.html' %}
+            {% include 'pagination.html' with querySet=rooms custom_range=custom_range2 %} 
+        </div>
+    </div>        
+
+    <div class="container-third">
+        {% include 'discord/activity_component.html' %}
+    </div>
+
+</div>
+
+
+
+{% endblock body %}
+{% block script %}
+<script>
+
+</script>
+{% endblock script %}

@@ -1,0 +1,59 @@
+{% comment %} 
+<h3>Browse Topics</h3>
+<hr>
+<div>
+    <a href="{% url 'discord:Home' %}">All {{topics.count}}</a>
+</div>
+{% for topic in topics %}
+    <div>
+        <a href="{% url 'discord:Home' %}?q={{topic.name}}">{{topic.name}} {{topic.room_set.all.count}}</a>
+    </div>
+{% endfor %} 
+{% endcomment %}
+
+<style>
+    .messages{
+        margin-right:2rem;
+        padding: 0.25rem 2rem;
+    }
+    .btn.btn--main--outline{
+        border: 1px solid var(--color-main);
+    }
+</style>
+
+<!-- Main Section -->
+<main class="inbox my-xl" style="margin-top:50px;width: 100%;margin-left:20px">
+    <div class="content-box">
+    <a href="{% url 'discord:Home' %}">
+        <h3 class="inbox__title">
+            Browse Topics
+        </h3>
+    </a>
+        <ul class="messages">
+            <li class="message">  
+                <a href="{% url 'discord:Home' %}">
+                    <span class="message__author">All</span>
+                    <span class="message__subject">{{mess.subject}}</span>
+                    <span class="message__date">
+                        <button class="btn btn--sm btn--main--outline">
+                            {{topics.count}}
+                        </button>
+                    </span>
+                </a>
+            </li>
+        {% for topic in topics %}
+            <li class="message">  
+                <a href="{% url 'discord:Home' %}?q={{topic.name}}">
+                    <span class="message__author">{{topic.name}}</span>
+                    <span class="message__subject">{{mess.subject}}</span>
+                    <span class="message__date">
+                        <button class="btn btn--sm btn--main--outline">
+                            {{topic.room_set.all.count}}
+                        </button>
+                    </span>
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    </main>

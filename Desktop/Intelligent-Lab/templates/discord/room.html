@@ -1,0 +1,318 @@
+{% extends 'base-project.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block style %}
+<style>
+    .container-profile-page{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        margin: 3rem 7rem;
+        grid-gap: 3rem;
+    }
+    .room{
+        width: 100%;
+        /* height: 100vh; */
+        overflow: hidden;
+        border-radius: 7px;
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+    .room__topLeft{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 1rem 3rem;
+        box-sizing: border-box;
+        background: var(--color-sub-lighter);
+    }
+    .room__topLeft a svg{
+        width: 15px;
+        height: 15px;
+        color: var(--color-sub);
+        font-size: 14px;
+    }
+    .room__topLeft h3{
+        color: var(--color-sub);
+        font-size: 20px;
+        margin-left: 2rem;
+        font-weight: 500;
+    }
+    .room__box{
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: #fff;
+    }
+    .room__info{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .room__info h3{
+        font-size: 20px;
+        color: var(--color-main);
+    }
+    .room__info span{
+        font-size: 14px;
+    }
+    .room__hosted{
+        display: flex;
+        flex-direction: column;
+    }
+    .room__hosted p{
+        font-size: 14px;
+    }
+    .room__author{
+        display: flex;
+        align-items: center;
+    }
+    .room__author span{
+        color: var(--color-main);
+    }
+    .room__author span:hover{
+        text-decoration: underline;
+    }
+    .room__header{
+        height: 30vh;
+        overflow: scroll;
+    }
+    .room__topics{
+        margin: 1rem 0;
+    }
+    .room__conversation{
+        height: 50vh;
+        margin-top: 3rem;
+        padding: 2rem;
+        background-color: var(--color-bg);
+        border-radius: 0.7rem;
+        overflow: scroll;
+    }
+    .thread{
+        margin-bottom: 2rem;
+        border-left: 2px solid var(--color-main);
+        border-radius: 0.2rem;
+        padding: 1.5rem 0 1.5rem 2rem;
+    }
+    .thread .thread__author{
+        display: flex;
+        align-items: center;
+    }
+    .thread .thread__author .thread__date{
+        font-size: 14px;
+    }
+    .thread .thread__top .thread__authorInfo{
+        display: flex;
+        align-items: center;
+        margin-right: 2rem;
+    }
+    .thread .thread__top .thread__authorInfo span{
+        color: var(--color-main);
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .comment-form input{
+        background-color: #fff !important;
+    }
+    .participants{
+        background: #fff;        
+        border-radius: .5rem;
+        overflow: hidden;
+    }
+    .participants .participants__top{
+        background: var(--color-sub-lighter);
+        color: var(--color-sub);
+        height: 5rem;
+        padding: 1rem 3rem;
+        box-sizing: border-box;
+        font-size: 20px;
+    }
+    .participants .participants__top span{
+        color: var(--color-main);
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .participants__list{
+        overflow: scroll;
+        display: flex;
+        padding: 1.5rem 2rem;
+
+        flex-direction: column;
+    }
+    .participants-container{
+        display: flex;
+        margin-top: 1rem;
+    }
+    .participant{
+        display: flex;
+    }
+    .participant p{
+        display: flex;
+        flex-direction: column;
+    }
+    .participant p span{
+        color: var(--color-main);
+        font-size: 14px;
+    }
+    .participant p span:hover{
+        text-decoration: underline;
+    }
+    @media (max-width:1162px) {
+        .container-profile-page{
+            display: grid;
+            grid-template-columns: 1fr;
+            margin: 3rem 7rem;
+            grid-gap: 3rem;
+        }
+    }
+    @media (max-width:703px) {
+        .container-profile-page{
+            margin: 3rem 1rem;
+        }
+        .room__info h3{
+            font-size: 15px;
+        }
+        .room__info span{
+            font-size: 10px;
+        }
+
+    }
+</style>
+{% endblock style %}
+{% block body %} 
+
+<main class="profile-page layout layout--2">
+    <div class="container-profile-page">
+      <!-- Room Start -->
+      <div class="room">
+        <div class="room__top">
+          <div class="room__topLeft">
+            <a href="{{request.META.HTTP_REFERER}}">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <title>arrow-left</title>
+                <path d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"></path>
+              </svg>
+            </a>
+            <h3>Study Room</h3>
+          </div>
+  
+          
+        </div>
+        <div class="room__box scroll">
+          <div class="room__header scroll">
+            <div class="room__info">
+              <h3>{{room.name}}</h3>
+              <span>{{room.created}} ago</span>
+            </div>
+            <div class="room__hosted">
+              <p>Hosted By</p>
+              <a href="{% url 'user:Profile' room.host.id %}" class="room__author">
+                <div>
+                    {% if profile.profileURL == '' %}
+                            <img class="avatar avatar--md" style=" height: 4rem;width: 4rem;margin-right:10px;" src="{% static 'media/user_default/mehdi.png' %}" alt="image" />
+                    {% else %}
+                        <img class="avatar avatar--sm" style="height: 4rem;width: 4rem;margin-right:10px;" src="{{room.host.profileURL}}" alt="image" />
+                    {% endif %}
+                </div>
+                <span>@{{room.host.user}}</span>
+              </a>
+            </div>
+            <div class="room__details">
+                {{room.description}}
+            </div>
+            <span class="tag tag--pill tag--main settings__btn room__topics">{{room.topic.name}}</span> 
+          </div>
+          <div class="room__conversation">
+            <div class="threads scroll">
+                
+            {% for message in RoomMessage %}
+              <div class="thread">
+                <div class="thread__top">
+                  <div class="thread__author">
+                    <a href="{% url 'user:Profile' message.user.id %}" class="thread__authorInfo">
+                    <div >
+                        {% if profile.profileURL == '' %}
+                        <img class="avatar avatar--md" style=" height: 3rem;width: 3rem;margin-right:10px;" src="{% static 'media/user_default/mehdi.png' %}" alt="image" />
+                        {% else %}
+                        <img class="avatar avatar--sm" style="height: 3rem;width: 3rem;margin-right:10px;" src="{{message.user.profileURL}}" alt="image" />
+                        {% endif %}
+                    </div>
+                      <span>@{{message.user}}</span>
+                    </a>
+                    <span class="thread__date">{{message.created|timesince}} ago</span>
+                  </div>
+  
+                  
+  
+                </div>
+                <div class="thread__details">
+                    {{message.body}}
+                </div>
+              </div>
+            {% endfor %}         
+              
+            </div>
+
+            {% if request.user.is_authenticated %}
+            <div class="comment-form">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="input input--text" name="body" placeholder="Write your message here .. ">
+                </form>
+            </div>
+            {% endif %}
+
+
+          </div>
+        </div>
+  
+        
+  
+      </div>
+      <!-- Room End -->
+  
+      <!--   Start -->
+      <div class="participants">
+        <h3 class="participants__top">Participants <span>({{room.participants.count}} Joined)</span></h3>
+        <div class="participants__list scroll">
+
+            
+        {% for user in participants %}
+        <div class="participants-container">
+            <a href="{% url 'user:Profile' user.id %}" class="participant">
+                <div >
+                    {% if profile.profileURL == '' %}
+                    <img class="avatar avatar--md" style=" height: 20rem;width: 20rem;margin-right:10px;" src="{% static 'media/user_default/mehdi.png' %}" alt="image" />
+                    {% else %}
+                    <img class="avatar avatar--sm" style="height: 5rem;width: 5rem;margin-right:10px;" src="{{user.profileURL}}" alt="image" />
+                    {% endif %}
+                </div>
+                <p>
+                    {{user.username}}
+                    <span>@{{user.username}}</span>
+                </p>
+            </a>
+        </div>
+        {% endfor %}
+          
+  
+        </div>
+      </div>
+      <!--  End -->
+    </div>
+  </main>
+
+   
+<!--
+{% if request.user == message.user.user %}
+    <a href="{% url 'discord:delete-message' message.id %}">Delete</a>
+{% endif %}
+-->
+
+
+{% endblock body %}
+{% block script %}
+<script>
+    
+    // send the data using ajax with rest api
+
+</script>
+{% endblock script %}
